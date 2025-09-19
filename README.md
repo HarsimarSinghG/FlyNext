@@ -79,9 +79,71 @@ The application uses Prisma with SQLite and includes models for:
 
 ## 🚀 Deployment
 
-Deploy easily on Vercel:
+This application is deployed on **Amazon EC2** for production hosting.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/FlyNext)
+### EC2 Deployment Setup
+
+1. **Launch EC2 Instance**
+   - Choose Ubuntu 20.04 LTS or later
+   - Select appropriate instance type (t3.medium recommended)
+   - Configure security groups for HTTP (80), HTTPS (443), and SSH (22)
+
+2. **Server Configuration**
+   ```bash
+   # Update system packages
+   sudo apt update && sudo apt upgrade -y
+   
+   # Install Node.js 18+
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   
+   # Install PM2 for process management
+   sudo npm install -g pm2
+   
+   # Install Nginx for reverse proxy
+   sudo apt install nginx -y
+   ```
+
+3. **Application Deployment**
+   ```bash
+   # Clone repository
+   git clone https://github.com/YOUR_USERNAME/FlyNext.git
+   cd FlyNext
+   
+   # Install dependencies
+   npm install
+   
+   # Build application
+   npm run build
+   
+   # Start with PM2
+   pm2 start npm --name "flynext" -- start
+   pm2 save
+   pm2 startup
+   ```
+
+4. **Nginx Configuration**
+   ```nginx
+   server {
+       listen 80;
+       server_name your-domain.com;
+       
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+### Production Features
+- **Process Management**: PM2 ensures application stays running
+- **Reverse Proxy**: Nginx handles static files and load balancing
+- **SSL Certificate**: Configure with Let's Encrypt for HTTPS
+- **Auto-restart**: Application automatically restarts on server reboot
 
 ## 📄 License
 
