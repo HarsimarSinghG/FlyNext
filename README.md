@@ -146,7 +146,6 @@ This application is deployed on **Amazon EC2** for production hosting.
 - **Auto-restart**: Application automatically restarts on server reboot
 
 ## 📄 License
-
 This project is licensed under the MIT License.
 
 ---
