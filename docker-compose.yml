@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: flynext-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flynext
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flynext-app
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist the uploads and invoices directories
+      - ./public/uploads:/app/public/uploads
+      - ./public/invoices:/app/public/invoices
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge

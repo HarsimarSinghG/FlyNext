@@ -1,0 +1,1272 @@
+openapi: 3.0.3
+info:
+  title: CSC309 Project
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: '{{server_url}}'
+  - url: http://localhost
+  - url: '{{BASE_URL}}'
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth Tests
+      summary: User Register
+      description: >-
+        Registers a new regular user in the system. Returns 201 Created on
+        success or 400 Bad Request if the user already exists or validation
+        fails.
+      operationId: userRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: owner@example.com
+                firstName:
+                  type: string
+                  example: owner
+                lastName:
+                  type: string
+                  example: owner
+                passportNumber:
+                  type: string
+                  example: ownerPassport
+                password:
+                  type: string
+                  example: owner
+            examples:
+              Owner Register:
+                value:
+                  email: owner@example.com
+                  firstName: owner
+                  lastName: owner
+                  passportNumber: ownerPassport
+                  password: owner
+              User Register:
+                value:
+                  email: user@example.com
+                  firstName: user
+                  lastName: user
+                  passportNumber: userPassport
+                  password: user
+      responses:
+        '200':
+          description: ''
+  /api/auth/login:
+    post:
+      tags:
+        - Auth Tests
+      summary: User Login
+      description: >-
+        Authenticates a regular user and returns access and refresh tokens. On
+        successful login (200 OK), the response tokens are stored in environment
+        variables for subsequent authorized requests.
+      operationId: userLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: owner@example.com
+                password:
+                  type: string
+                  example: owner
+            examples:
+              Owner Login:
+                value:
+                  email: owner@example.com
+                  password: owner
+              User Login:
+                value:
+                  email: user@example.com
+                  password: user
+      responses:
+        '200':
+          description: ''
+  /api/auth/refresh:
+    post:
+      tags:
+        - Auth Tests
+      summary: User refresh
+      description: >-
+        Refreshes the user's authentication tokens using a valid refresh token.
+        Returns new access and refresh tokens that are stored in the environment
+        variables.
+      operationId: userRefresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: '{{owner_refresh_token}}'
+            examples:
+              Owner refresh:
+                value:
+                  refreshToken: '{{owner_refresh_token}}'
+              User refresh:
+                value:
+                  refreshToken: '{{user_refresh_token}}'
+      responses:
+        '200':
+          description: ''
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth Tests
+      summary: User Logout
+      description: >-
+        Logs out a regular user by invalidating their current authentication
+        tokens. Requires a valid authentication token in the request header.
+        Returns 200 OK on successful logout.
+      operationId: userLogout
+      responses:
+        '200':
+          description: ''
+  /api/bookings:
+    get:
+      tags:
+        - Bookings
+      summary: 11) List My Bookings
+      description: >-
+        Retrieves a list of all bookings associated with the authenticated user.
+        This endpoint returns an array of booking information, including both
+        active and cancelled bookings. The test verifies that the response is a
+        valid array of bookings.
+      operationId: 11ListMyBookings
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Bookings
+      summary: 1) Create Booking - Flight Only
+      description: >-
+        Creates a new booking with flight details only. The request includes
+        payment information and specific flight details such as
+        departure/arrival airports and times. Upon successful creation (201
+        Created), the test stores the booking ID and flight booking reference
+        for later verification tests.
+      operationId: 1CreateBookingFlightOnly
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                flightBookings:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      departureAirportCode:
+                        type: string
+                        example: ABC
+                  example:
+                    - departureAirportCode: ABC
+                hotelBookings:
+                  type: array
+                  items: {}
+                  example: []
+                paymentDetails:
+                  type: object
+                  properties:
+                    cardCvc:
+                      type: string
+                      example: xxx
+                    cardExpiry:
+                      type: string
+                      example: 11/10
+                    cardNumber:
+                      type: string
+                      example: 1234 5678
+            examples:
+              1) Create Booking - Flight Only:
+                value:
+                  flightBookings:
+                    - afsFlightId: 74dd6e92-b9d2-4701-9e2c-fe4fa20f962f
+                      arrivalAirportCode: ABC
+                      arrivalTime: '2025-06-10T13:00:00.000Z'
+                      departureAirportCode: XYZ
+                      departureTime: '2025-06-10T10:00:00.000Z'
+                      passengers: 1
+                      price: 150.5
+                  hotelBookings: []
+                  paymentDetails:
+                    cardCvc: '123'
+                    cardExpiry: 12/29
+                    cardNumber: 4242 4242 4242 4242
+              2) Create Booking - Hotel Only:
+                value:
+                  flightBookings: []
+                  hotelBookings:
+                    - checkInDate: '2025-07-05T00:00:00.000Z'
+                      checkOutDate: '2025-07-08T00:00:00.000Z'
+                      hotelId: '{{HOTEL_ID}}'
+                      numberOfRooms: 1
+                      roomTypeId: '{{ROOM_TYPE_ID}}'
+                  paymentDetails:
+                    cardCvc: '123'
+                    cardExpiry: 11/30
+                    cardNumber: 4000 0039 6000 0004
+              3) Create Booking - Flight & Hotel:
+                value:
+                  flightBookings:
+                    - afsFlightId: 74dd6e92-b9d2-4701-9e2c-fe4fa20f962f
+                      arrivalAirportCode: UVW
+                      arrivalTime: '2025-12-01T12:00:00.000Z'
+                      departureAirportCode: DEF
+                      departureTime: '2025-12-01T08:00:00.000Z'
+                      passengers: 2
+                      price: 300
+                  hotelBookings:
+                    - checkInDate: '2025-12-02T00:00:00.000Z'
+                      checkOutDate: '2025-12-05T00:00:00.000Z'
+                      hotelId: '{{HOTEL_ID}}'
+                      numberOfRooms: 2
+                      roomTypeId: '{{ROOM_TYPE_ID}}'
+                  paymentDetails:
+                    cardCvc: '321'
+                    cardExpiry: 01/27
+                    cardNumber: 5555 5555 5555 4444
+              4) Create Booking - Invalid Data (Expect 400):
+                value:
+                  flightBookings:
+                    - departureAirportCode: ABC
+                  hotelBookings: []
+                  paymentDetails:
+                    cardCvc: xxx
+                    cardExpiry: 11/10
+                    cardNumber: 1234 5678
+      responses:
+        '200':
+          description: ''
+  /api/bookings/{bookingId}:
+    get:
+      tags:
+        - Bookings
+      summary: 5) Get Single Booking by ID
+      description: >-
+        Retrieves detailed information for a specific booking using the booking
+        ID stored in the environment variable. This request fetches all
+        information related to a single booking including its flight and hotel
+        reservations. The test verifies that the returned booking ID matches the
+        requested ID.
+      operationId: 5GetSingleBookingById
+      responses:
+        '200':
+          description: ''
+    patch:
+      tags:
+        - Bookings
+      summary: 10) Cancel Booking via PATCH
+      description: >-
+        Updates the status of a booking to 'cancelled' using the PATCH method.
+        This endpoint allows users to cancel their existing bookings. The test
+        verifies that the response indicates the booking status has been
+        successfully updated to 'cancelled'.
+      operationId: 10CancelBookingViaPatch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: cancelled
+            examples:
+              10) Cancel Booking via PATCH:
+                value:
+                  status: cancelled
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/bookings/{nonExistentBookingId}:
+    get:
+      tags:
+        - Bookings
+      summary: 6) Get Single Booking - Nonexistent (Expect 404)
+      description: >-
+        Tests the API's error handling by attempting to retrieve a booking with
+        a non-existent ID. The API should respond with a 404 Not Found status,
+        indicating that the requested booking does not exist in the system.
+      operationId: 6GetSingleBookingNonexistentExpect404
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: nonExistentBookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/bookings/{bookingId}/invoice:
+    get:
+      tags:
+        - Bookings
+      summary: 7) Retrieve Invoice for Booking
+      description: >-
+        Retrieves the invoice information for a specific booking. This endpoint
+        returns the invoice details including a URL to access or download the
+        full invoice document. The test verifies that the response contains an
+        invoice URL property.
+      operationId: 7RetrieveInvoiceForBooking
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/flights/{flightBookingId}/verify:
+    get:
+      tags:
+        - Bookings
+      summary: 8) Verify Flight Booking with AFS
+      description: >-
+        Verifies a flight booking with the Airline Flight System (AFS) using the
+        flight booking ID. This endpoint checks if the booking exists in the
+        external flight system and confirms its status. The test validates that
+        the response contains all required verification fields and that the
+        flight ID matches the requested ID.
+      operationId: 8VerifyFlightBookingWithAfs
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: flightBookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/flights/{nonExistentBookingId}/verify:
+    get:
+      tags:
+        - Bookings
+      summary: 9) Verify Invalid Flight Booking ID (Expect 404)
+      description: >-
+        Tests the API's error handling by attempting to verify a flight booking
+        with a non-existent ID. The API should respond with a 404 Not Found
+        status, indicating that the requested flight booking does not exist in
+        the system.
+      operationId: 9VerifyInvalidFlightBookingIdExpect404
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: nonExistentBookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/flights/locations:
+    get:
+      tags:
+        - Flight auto complete tests
+      summary: Search by City - Toronto
+      description: >-
+        Searches for flight locations by city name. Tests that the API correctly
+        returns location results that match the provided city name in either the
+        name or city fields. The test verifies that the response has a 200
+        status code, contains a results array, and includes at least one entry
+        for the queried city.
+      operationId: searchByCityToronto
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            example: toronto
+          description: Search term for location matching
+      responses:
+        '200':
+          description: ''
+  /api/flights/search:
+    get:
+      tags:
+        - Flight search
+      summary: One-way Flight Search
+      description: >-
+        Tests the API's ability to search for one-way flights between Toronto
+        and Zurich. The request specifies origin, destination, and a departure
+        date but no return date. Tests verify that the response correctly
+        identifies the trip type as 'one-way', contains an outbound flights
+        array, and that each flight has all the required data fields including
+        itinerary ID, price, duration, and times.
+      operationId: oneWayFlightSearch
+      parameters:
+        - name: origin
+          in: query
+          schema:
+            type: string
+            example: Toronto
+          description: Departure city or airport
+        - name: destination
+          in: query
+          schema:
+            type: string
+            example: Zurich
+          description: Arrival city or airport
+        - name: departureDate
+          in: query
+          schema:
+            type: string
+            example: '2024-11-17'
+          description: Date of departure in YYYY-MM-DD format
+        - name: returnDate
+          in: query
+          schema:
+            type: string
+            example: '2024-11-24'
+          description: Date of return flight in YYYY-MM-DD format
+      responses:
+        '200':
+          description: ''
+  /api/user/:
+    get:
+      tags:
+        - Profile Tests
+        - Owner
+      summary: Get Profile
+      description: >-
+        Retrieves the complete profile information for the currently
+        authenticated property owner. This endpoint returns personal information
+        such as ID, email, name, and role. The test verifies that the response
+        has a 200 status code, contains all expected profile fields, and
+        importantly, confirms that no password information is included in the
+        response for security purposes.
+      operationId: getProfile
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - Profile Tests
+        - Owner
+      summary: Update Profile
+      description: >-
+        Updates the profile information for the currently authenticated property
+        owner. This endpoint accepts firstName, lastName, and phoneNumber in the
+        request body and returns the updated user object. The test includes
+        dynamic content with a timestamp to ensure the change is unique across
+        test runs. The test verifies that the response indicates a successful
+        update (with a confirmation message) and that the returned user object
+        contains the values that were submitted in the request.
+      operationId: updateProfile
+      parameters:
+        - name: cookie
+          in: header
+          schema:
+            type: string
+            example: auth_token={{owner_token}}
+          description: Authentication token for property owner access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: Updated{{$timestamp}}
+                lastName:
+                  type: string
+                  example: User
+                phoneNumber:
+                  type: string
+                  example: '+1987654321'
+            examples:
+              Update Profile:
+                value:
+                  firstName: Updated{{$timestamp}}
+                  lastName: User
+                  phoneNumber: '+1987654321'
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/user:
+    get:
+      tags:
+        - Profile Tests
+        - User
+      summary: Get Profile
+      description: >-
+        Retrieves the complete profile information for the currently
+        authenticated regular user. This endpoint returns personal information
+        such as ID, email, name, and role. The test verifies that the response
+        has a 200 status code and checks that the returned user has the 'user'
+        role, distinguishing them from property owners.
+      operationId: getProfile1
+      responses:
+        '200':
+          description: ''
+    put:
+      tags:
+        - Profile Tests
+        - User
+      summary: Update Profile
+      description: >-
+        Updates the profile information for the currently authenticated regular
+        user. This endpoint accepts firstName, lastName, profilePictureUrl, and
+        phoneNumber in the request body and returns the updated user object. The
+        test verifies that the response has a 200 status code, contains a
+        success message, and that the updated user object reflects the changes
+        submitted in the request.
+      operationId: updateProfile1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: AliceUpdated
+                lastName:
+                  type: string
+                  example: DoeUpdated
+                phoneNumber:
+                  type: string
+                  example: 123-456-7890
+                profilePictureUrl:
+                  type: string
+                  example: https://example.com/profile.jpg
+            examples:
+              Update Profile:
+                value:
+                  firstName: AliceUpdated
+                  lastName: DoeUpdated
+                  phoneNumber: 123-456-7890
+                  profilePictureUrl: https://example.com/profile.jpg
+      responses:
+        '200':
+          description: ''
+  /hotels:
+    get:
+      tags:
+        - Hotel Search and Booking - Visitor
+        - 1. Hotel Search
+      summary: List Hotels
+      description: >-
+        Retrieves a list of all hotels available in the system. This endpoint
+        returns an array of hotel objects, each containing basic information
+        about the hotel. The request requires an authentication token, and the
+        response is expected to be a JSON array.
+      operationId: listHotels
+      parameters:
+        - name: city
+          in: query
+          schema:
+            type: string
+            example: Toronto
+          description: City name to filter hotels by location
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: Grand
+          description: Partial or full hotel name to search for
+        - name: minRating
+          in: query
+          schema:
+            type: string
+            example: '4'
+          description: Minimum star rating (1-5)
+        - name: maxRating
+          in: query
+          schema:
+            type: string
+            example: '5'
+          description: Maximum star rating (1-5)
+        - name: checkInDate
+          in: query
+          schema:
+            type: string
+            example: '2025-03-15'
+          description: Check-in date in YYYY-MM-DD format
+        - name: checkOutDate
+          in: query
+          schema:
+            type: string
+            example: '2025-03-20'
+          description: Check-out date in YYYY-MM-DD format
+        - name: minPrice
+          in: query
+          schema:
+            type: string
+            example: '100'
+          description: Minimum price per night in dollars
+        - name: maxPrice
+          in: query
+          schema:
+            type: string
+            example: '300'
+          description: Maximum price per night in dollars
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Hotel Management
+        - 2. Hotel Management
+      summary: Create Hotel
+      description: >-
+        Creates a new hotel in the system. This endpoint requires a property
+        owner's authentication token and a JSON payload containing the hotel
+        details. On success, it returns a 201 Created status with the newly
+        created hotel object, including a unique ID that is stored in the
+        environment variables for later use.
+      operationId: createHotel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  example: 123 Test Street, Test City
+                images:
+                  type: array
+                  items:
+                    type: string
+                    example: https://example.com/image1.jpg
+                  example:
+                    - https://example.com/image1.jpg
+                    - https://example.com/image2.jpg
+                latitude:
+                  type: number
+                  example: 43.6532
+                logoUrl:
+                  type: string
+                  example: https://example.com/logo.png
+                longitude:
+                  type: number
+                  example: -79.3832
+                name:
+                  type: string
+                  example: Test Hotel
+                starRating:
+                  type: number
+                  example: 4
+            examples:
+              Create Hotel:
+                value:
+                  address: 123 Test Street, Test City
+                  images:
+                    - https://example.com/image1.jpg
+                    - https://example.com/image2.jpg
+                  latitude: 43.6532
+                  logoUrl: https://example.com/logo.png
+                  longitude: -79.3832
+                  name: Test Hotel
+                  starRating: 4
+      responses:
+        '200':
+          description: ''
+  /hotels/{HOTEL_ID}:
+    get:
+      tags:
+        - Hotel Search and Booking - Visitor
+        - 2. Hotel Details
+      summary: Get Hotel by ID (user)
+      description: >-
+        Retrieves detailed information about a specific hotel using its unique
+        ID. This request is performed with a regular user's authentication token
+        to verify that hotel details are accessible to all authenticated users,
+        not just property owners. The test verifies that the correct hotel
+        information is returned.
+      operationId: getHotelByIdUser
+      parameters:
+        - name: checkInDate
+          in: query
+          schema:
+            type: string
+            example: '2025-03-15'
+          description: Check-in date in YYYY-MM-DD format
+        - name: checkOutDate
+          in: query
+          schema:
+            type: string
+            example: '2025-03-20'
+          description: Check-out date in YYYY-MM-DD format
+      responses:
+        '200':
+          description: ''
+    put:
+      tags:
+        - Hotel Management
+        - 2. Hotel Management
+      summary: Update Hotel (user)
+      description: >-
+        Updates an existing hotel's information using a regular user's
+        authentication token. This tests whether users who are not property
+        owners can update hotel details. The request includes a partial update
+        with new values for the name and star rating. The test verifies that the
+        response contains the updated values.
+      operationId: updateHotelUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Test Hotel
+                starRating:
+                  type: number
+                  example: 5
+            examples:
+              Update Hotel (owner):
+                value:
+                  name: Updated Test Hotel
+                  starRating: 5
+              Update Hotel (user):
+                value:
+                  name: Updated Test Hotel
+                  starRating: 5
+      responses:
+        '200':
+          description: ''
+    delete:
+      tags:
+        - Hotel Management
+        - 6. Cleanup
+      summary: Delete Hotel
+      description: >-
+        Deletes a hotel from the system. This is the final cleanup operation to
+        remove the test hotel created earlier. The test verifies that the
+        response has a 200 OK status code and contains a success message,
+        confirming that the hotel was successfully deleted from the system.
+      operationId: deleteHotel
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /hotels/{HOTEL_ID}/room-types:
+    get:
+      tags:
+        - Hotel Search and Booking - Visitor
+        - 3. Room Types
+      summary: List Room Types
+      description: >-
+        Retrieves a list of all room types available for a specific hotel. This
+        request is made with a property owner's authentication token. The
+        response should be an array of room type objects. The test verifies that
+        the previously created room type exists in the returned list by checking
+        for its ID.
+      operationId: listRoomTypes
+      responses:
+        '200':
+          description: ''
+    post:
+      tags:
+        - Hotel Management
+        - 3. Room Type Management
+      summary: Create Room Type (user)
+      description: >-
+        Creates a new room type for a specific hotel using a regular user's
+        authentication token. This tests whether users who are not property
+        owners can create room types. The request includes complete room type
+        details including name, amenities, price per night, images, and base
+        availability. The test verifies that the response contains the expected
+        data and stores the room type ID for later use.
+      operationId: createRoomTypeUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amenities:
+                  type: array
+                  items:
+                    type: string
+                    example: TV
+                  example:
+                    - TV
+                    - WiFi
+                    - Mini Fridge
+                    - King Bed
+                baseAvailability:
+                  type: number
+                  example: 10
+                images:
+                  type: array
+                  items:
+                    type: string
+                    example: https://example.com/room1.jpg
+                  example:
+                    - https://example.com/room1.jpg
+                    - https://example.com/room2.jpg
+                name:
+                  type: string
+                  example: Deluxe Room
+                pricePerNight:
+                  type: number
+                  example: 150
+            examples:
+              Create Room Type (owner):
+                value:
+                  amenities:
+                    - TV
+                    - WiFi
+                    - Mini Fridge
+                    - King Bed
+                  baseAvailability: 10
+                  images:
+                    - https://example.com/room1.jpg
+                    - https://example.com/room2.jpg
+                  name: Deluxe Room
+                  pricePerNight: 150
+              Create Room Type (user):
+                value:
+                  amenities:
+                    - TV
+                    - WiFi
+                    - Mini Fridge
+                    - King Bed
+                  baseAvailability: 10
+                  images:
+                    - https://example.com/room1.jpg
+                    - https://example.com/room2.jpg
+                  name: Deluxe Room
+                  pricePerNight: 150
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /hotels/{HOTEL_ID}/room-types/{ROOM_TYPE_ID}:
+    get:
+      tags:
+        - Hotel Search and Booking - Visitor
+        - 3. Room Types
+      summary: Get Room Type by ID
+      description: >-
+        Retrieves detailed information about a specific room type using its
+        unique ID. This request is made with a property owner's authentication
+        token. The test verifies that the response contains the correct room
+        type by matching the ID and name from the previously created room type.
+      operationId: getRoomTypeById
+      responses:
+        '200':
+          description: ''
+    put:
+      tags:
+        - Hotel Management
+        - 3. Room Type Management
+      summary: Update Room Type (user)
+      description: >-
+        Updates an existing room type's information using a regular user's
+        authentication token. This tests whether users who are not property
+        owners can update room type details. The request includes a partial
+        update with new values for the name and price per night. The test
+        verifies that the response contains the updated values.
+      operationId: updateRoomTypeUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Premium Deluxe Room
+                pricePerNight:
+                  type: number
+                  example: 175
+            examples:
+              Update Room Type (owner):
+                value:
+                  name: Premium Deluxe Room
+                  pricePerNight: 175
+              Update Room Type (user):
+                value:
+                  name: Premium Deluxe Room
+                  pricePerNight: 175
+      responses:
+        '200':
+          description: ''
+    delete:
+      tags:
+        - Hotel Management
+        - 6. Cleanup
+      summary: Delete Room Type
+      description: >-
+        Deletes a room type from a hotel. This is a cleanup operation to remove
+        the test room type created earlier. The test verifies that the response
+        has a 200 OK status code and contains a success message, confirming that
+        the room type was successfully deleted from the system.
+      operationId: deleteRoomType
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ROOM_TYPE_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /hotels/{HOTEL_ID}/room-types/{ROOM_TYPE_ID}/availability:
+    post:
+      tags:
+        - Hotel Management
+        - 4. Room Availability Management
+      summary: Set Room Availability (user)
+      description: >-
+        Sets room availability for specific dates using a regular user's
+        authentication token. This tests whether users who are not property
+        owners can modify room availability. The request includes an array of
+        date objects, each specifying a date and the number of available rooms
+        for that date. The test verifies that the response is an array
+        containing the created availability records.
+      operationId: setRoomAvailabilityUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  availableRooms:
+                    type: number
+                    example: 6
+                  date:
+                    type: string
+                    example: '2025-04-01'
+              example:
+                - availableRooms: 6
+                  date: '2025-04-01'
+                - availableRooms: 5
+                  date: '2025-04-02'
+            examples:
+              Set Room Availability (owner):
+                value:
+                  - availableRooms: 6
+                    date: '2025-04-01'
+                  - availableRooms: 5
+                    date: '2025-04-02'
+              Set Room Availability (user):
+                value:
+                  - availableRooms: 8
+                    date: '2025-04-01'
+                  - availableRooms: 5
+                    date: '2025-04-02'
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ROOM_TYPE_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /hotels/{HOTEL_ID}/room-types/{ROOM_TYPE_ID}/availability/check:
+    get:
+      tags:
+        - Hotel Search and Booking - Visitor
+        - 4. Room Availability
+      summary: Check Room Availability
+      description: >-
+        Checks room availability for a specific room type over a date range.
+        This request returns the availability status for each day between the
+        specified start and end dates. The test verifies that the response
+        contains the room type ID and an availability array, and checks that the
+        first day's availability matches what was set in previous requests.
+      operationId: checkRoomAvailability
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            example: '2025-04-01'
+          description: Beginning date for availability check (YYYY-MM-DD)
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            example: '2025-04-05'
+          description: End date for availability check (YYYY-MM-DD)
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: ROOM_TYPE_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /dummy:
+    get:
+      tags:
+        - Hotel Management
+        - 5. Hotel Booking Management
+      summary: Setup Booking ID (Skip this in real testing)
+      description: >-
+        This is a dummy request that simulates setting up a booking ID for
+        testing purposes. In a real-world scenario, this would be replaced by an
+        actual booking creation flow. The test script sets a collection variable
+        with a test booking ID for use in subsequent requests.
+      operationId: setupBookingIdSkipThisInRealTesting
+      responses:
+        '200':
+          description: ''
+  /hotels/{HOTEL_ID}/bookings:
+    get:
+      tags:
+        - Hotel Management
+        - 5. Hotel Booking Management
+      summary: List Hotel Bookings
+      description: >-
+        Retrieves a list of all bookings for a specific hotel. This endpoint
+        requires a property owner's authentication token to ensure only
+        authorized users can access booking data. The response should be an
+        array of booking objects. The test verifies that the response is a
+        successful 200 status code and that the response body is an array.
+      operationId: listHotelBookings
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            example: '2025-04-01'
+          description: Beginning date for filtering bookings (YYYY-MM-DD)
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            example: '2025-04-30'
+          description: End date for filtering bookings (YYYY-MM-DD)
+        - name: roomTypeId
+          in: query
+          schema:
+            type: string
+            example: '{{ROOM_TYPE_ID}}'
+          description: Room type ID to filter bookings
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+  /hotels/{HOTEL_ID}/bookings/{bookingId}:
+    get:
+      tags:
+        - Hotel Management
+        - 5. Hotel Booking Management
+      summary: Get Single Booking Details
+      description: >-
+        Retrieves detailed information about a specific hotel booking. Since
+        we're using a test booking ID, the endpoint might return either a
+        successful response with booking details or a 404 Not Found error. The
+        test validates that the response is either a 200 OK with the correct
+        hotel ID, or a 404 Not Found status code.
+      operationId: getSingleBookingDetails
+      responses:
+        '200':
+          description: ''
+    put:
+      tags:
+        - Hotel Management
+        - 5. Hotel Booking Management
+      summary: Cancel Hotel Booking
+      description: >-
+        Updates the status of a hotel booking to 'cancelled'. Since we're using
+        a test booking ID, the endpoint might return either a successful
+        response or a 404 Not Found error. The test validates that the response
+        is either a 200 OK with the status set to 'cancelled', or a 404 Not
+        Found if the booking doesn't exist.
+      operationId: cancelHotelBooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: cancelled
+            examples:
+              Cancel Hotel Booking:
+                value:
+                  status: cancelled
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: HOTEL_ID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: bookingId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/notifications:
+    get:
+      tags:
+        - Notifications
+      summary: List Notifications
+      description: >-
+        Retrieves a list of all notifications for the authenticated user. This
+        endpoint returns notifications sorted by date (newest first) and
+        includes information about whether each notification has been read. The
+        response includes a 'notifications' array containing each notification
+        object with id, message, timestamp, and read status. This test verifies
+        that the response has a 200 status code and contains properly structured
+        notification data.
+      operationId: listNotifications
+      responses:
+        '200':
+          description: ''
+    patch:
+      tags:
+        - Notifications
+      summary: Mark Notifications as Read
+      description: >-
+        Updates the read status of specified notifications to mark them as read.
+        This endpoint accepts an array of notification IDs in the request body
+        and updates all matching notifications to have read=true status. It
+        returns a success indicator and a count of how many notifications were
+        updated. This test verifies that the response has a 200 status code and
+        contains a success property with value true, confirming that the
+        notifications were successfully marked as read.
+      operationId: markNotificationsAsRead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notificationIds:
+                  type: array
+                  items:
+                    type: string
+                    example: some-notification-id
+                  example:
+                    - some-notification-id
+            examples:
+              Mark Notifications as Read:
+                value:
+                  notificationIds:
+                    - some-notification-id
+      responses:
+        '200':
+          description: ''
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Auth Tests
+  - name: Bookings
+  - name: Flight auto complete tests
+  - name: Flight search
+  - name: Profile Tests
+  - name: Owner
+    description: >-
+      Tests for profile management endpoints when accessed with property owner
+      credentials. These tests verify that property owners can successfully
+      retrieve and update their profile information.
+  - name: User
+    description: >-
+      Tests for profile management endpoints when accessed with regular user
+      credentials. These tests verify that standard users can successfully
+      retrieve and update their profile information.
+  - name: Hotel Management
+  - name: 2. Hotel Management
+    description: >-
+      Tests for the hotel management API endpoints, including listing hotels,
+      creating new hotels, retrieving hotel details, and updating hotel
+      information.
+  - name: 3. Room Type Management
+    description: >-
+      Tests for room type management API endpoints, including creating, listing,
+      retrieving, and updating room types within hotels.
+  - name: 4. Room Availability Management
+    description: >-
+      Tests for room availability management API endpoints, including setting
+      and checking room availability for specific dates.
+  - name: 5. Hotel Booking Management
+    description: >-
+      Tests for hotel booking management API endpoints, including listing,
+      filtering, viewing and cancelling bookings.
+  - name: 6. Cleanup
+    description: >-
+      Tests for cleanup operations including deleting room types and hotels to
+      ensure proper resource management.
+  - name: Hotel Search and Booking - Visitor
+  - name: 1. Hotel Search
+    description: >-
+      Endpoints for searching hotels with various filters including location,
+      name, star rating, price range, and availability dates. These endpoints
+      allow users to find hotels matching their specific requirements.
+  - name: 2. Hotel Details
+    description: >-
+      Endpoints for viewing detailed hotel information, with options to include
+      room availability data for specified date ranges.
+  - name: 3. Room Types
+    description: >-
+      Endpoints for viewing room types within a hotel, including listing all
+      room types and retrieving detailed information about specific room types.
+  - name: 4. Room Availability
+    description: >-
+      Endpoints for checking room availability for specific dates, with options
+      to specify custom date ranges or use default periods.
+  - name: Notifications

@@ -1,0 +1,4434 @@
+{
+	"info": {
+		"_postman_id": "71edbb0f-5f39-4320-a6ea-43b1f259f096",
+		"name": "CSC309 Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42765060"
+	},
+	"item": [
+		{
+			"name": "Auth Tests",
+			"item": [
+				{
+					"name": "User Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Register - Expect 201 or 400 if user already exists\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,400]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"user\",\n  \"firstName\": \"user\",\n  \"lastName\": \"user\",\n  \"passportNumber\": \"userPassport\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/register",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new regular user in the system. Returns 201 Created on success or 400 Bad Request if the user already exists or validation fails."
+					},
+					"response": []
+				},
+				{
+					"name": "Owner Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Register - Expect 201 or 400 if user already exists\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,400]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"owner\",\n  \"firstName\": \"owner\",\n  \"lastName\": \"owner\",\n  \"passportNumber\": \"ownerPassport\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/register",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new property owner in the system. Uses the same endpoint as regular user registration. Returns 201 Created on success or 400 Bad Request if the owner already exists or validation fails."
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"// Store token in environment if present",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.refreshToken) {",
+									"        pm.environment.set(\"user_refresh_token\", jsonData.refreshToken);",
+									"    }",
+									"        if (jsonData.accessToken) {",
+									"        pm.environment.set(\"user_token\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/login",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates a regular user and returns access and refresh tokens. On successful login (200 OK), the response tokens are stored in environment variables for subsequent authorized requests."
+					},
+					"response": []
+				},
+				{
+					"name": "User refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"// Store token in environment if present",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.refreshToken) {",
+									"        pm.environment.set(\"user_refresh_token\", jsonData.refreshToken);",
+									"    }",
+									"        if (jsonData.accessToken) {",
+									"        pm.environment.set(\"user_token\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{user_refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/refresh",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refreshes the user's authentication tokens using a valid refresh token. Returns new access and refresh tokens that are stored in the environment variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Owner refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"// Store token in environment if present",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.refreshToken) {",
+									"        pm.environment.set(\"owner_refresh_token\", jsonData.refreshToken);",
+									"    }",
+									"        if (jsonData.accessToken) {",
+									"        pm.environment.set(\"owner_token\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{owner_refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/refresh",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refreshes the property owner's authentication tokens using a valid refresh token. Returns new access and refresh tokens that are stored in the environment variables."
+					},
+					"response": []
+				},
+				{
+					"name": "Owner Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"// Store token in environment if present",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.refreshToken) {",
+									"        pm.environment.set(\"owner_refresh_token\", jsonData.refreshToken);",
+									"    }",
+									"        if (jsonData.accessToken) {",
+									"        pm.environment.set(\"owner_token\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"owner\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/auth/login",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates a property owner and returns access and refresh tokens. On successful login (200 OK), the response tokens are stored in environment variables for subsequent authorized requests."
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Logout - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "Authentication token for authorized access"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/auth/logout",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logs out a regular user by invalidating their current authentication tokens. Requires a valid authentication token in the request header. Returns 200 OK on successful logout."
+					},
+					"response": []
+				},
+				{
+					"name": "Owner Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Logout - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{owner_token}}",
+								"description": "Authentication token for authorized access"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/auth/logout",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logs out a property owner by invalidating their current authentication tokens. Requires a valid authentication token in the request header. Returns 200 OK on successful logout."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "1) Create Booking - Flight Only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Booking - Flight Only | Expect 201\", () => {",
+									"  pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"const data = pm.response.json();",
+									"pm.test(\"Response Contains Booking ID\", () => {",
+									"  pm.expect(data).to.have.property(\"id\");",
+									"});",
+									"",
+									"// Store flight booking ID for later verification tests",
+									"if (data && data.flightBookings && data.flightBookings.length > 0) {",
+									"  pm.environment.set(\"flightBookingId\", data.flightBookings[0].id);",
+									"",
+									"  pm.environment.set(\"bookingId\", data.id);",
+									"  ",
+									"  // Store AFS booking reference for verification",
+									"  if (data.flightBookings[0].afsBookingReference) {",
+									"    pm.environment.set(\"verification_id\", data.flightBookings[0].afsBookingReference);",
+									"    console.log(\"Set verification_id to:\", data.flightBookings[0].afsBookingReference);",
+									"  }",
+									"}",
+									"",
+									"// Alternative: Get it from the afsBooking object if available",
+									"if (data.afsBooking && data.afsBooking.bookingReference) {",
+									"  pm.environment.set(\"verification_id\", data.afsBooking.bookingReference);",
+									"  console.log(\"Set verification_id from afsBooking to:\", data.afsBooking.bookingReference);",
+									"}",
+									"",
+									"// Check that we have what we need for verification",
+									"pm.test(\"AFS Booking Reference is stored in environment\", () => {",
+									"  const verificationId = pm.environment.get(\"verification_id\");",
+									"  pm.expect(verificationId).to.not.be.undefined;",
+									"  pm.expect(verificationId).to.not.be.empty;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for booking creation"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentDetails\": {\n    \"cardNumber\": \"4242 4242 4242 4242\",\n    \"cardExpiry\": \"12/29\",\n    \"cardCvc\": \"123\"\n  },\n  \"flightBookings\": [\n    {\n      \"afsFlightId\": \"74dd6e92-b9d2-4701-9e2c-fe4fa20f962f\",\n      \"departureAirportCode\": \"XYZ\",\n      \"arrivalAirportCode\": \"ABC\",\n      \"departureTime\": \"2025-06-10T10:00:00.000Z\",\n      \"arrivalTime\": \"2025-06-10T13:00:00.000Z\",\n      \"passengers\": 1,\n      \"price\": 150.50\n    }\n  ],\n  \"hotelBookings\": []\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/bookings",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Creates a new booking with flight details only. The request includes payment information and specific flight details such as departure/arrival airports and times. Upon successful creation (201 Created), the test stores the booking ID and flight booking reference for later verification tests."
+					},
+					"response": []
+				},
+				{
+					"name": "2) Create Booking - Hotel Only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Booking - Flight Only | Expect 201\", () => {",
+									"  pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"const data = pm.response.json();",
+									"pm.test(\"Response Contains Booking ID\", () => {",
+									"  pm.expect(data).to.have.property(\"id\");",
+									"});",
+									"",
+									"// Store flight booking ID for later verification tests",
+									"// if (data && data.flightBookings && data.flightBookings.length > 0) {",
+									"//   pm.environment.set(\"flightBookingId\", data.flightBookings[0].id);",
+									"",
+									"  pm.environment.set(\"bookingId\", data.id);",
+									"  ",
+									"//   // Store AFS booking reference for verification",
+									"//   if (data.flightBookings[0].afsBookingReference) {",
+									"//     pm.environment.set(\"verification_id\", data.flightBookings[0].afsBookingReference);",
+									"//     console.log(\"Set verification_id to:\", data.flightBookings[0].afsBookingReference);",
+									"//   }",
+									"// }",
+									"",
+									"// // Alternative: Get it from the afsBooking object if available",
+									"// if (data.afsBooking && data.afsBooking.bookingReference) {",
+									"//   pm.environment.set(\"verification_id\", data.afsBooking.bookingReference);",
+									"//   console.log(\"Set verification_id from afsBooking to:\", data.afsBooking.bookingReference);",
+									"// }",
+									"",
+									"// // Check that we have what we need for verification",
+									"// pm.test(\"AFS Booking Reference is stored in environment\", () => {",
+									"//   const verificationId = pm.environment.get(\"verification_id\");",
+									"//   pm.expect(verificationId).to.not.be.undefined;",
+									"//   pm.expect(verificationId).to.not.be.empty;",
+									"// });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for booking creation"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentDetails\": {\n    \"cardNumber\": \"4000 0039 6000 0004\",\n    \"cardExpiry\": \"11/30\",\n    \"cardCvc\": \"123\"\n  },\n  \"flightBookings\": [],\n  \"hotelBookings\": [\n    {\n      \"hotelId\": \"{{HOTEL_ID}}\",\n      \"roomTypeId\": \"{{ROOM_TYPE_ID}}\",\n      \"checkInDate\": \"2025-07-05T00:00:00.000Z\",\n      \"checkOutDate\": \"2025-07-08T00:00:00.000Z\",\n      \"numberOfRooms\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/bookings",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Creates a new booking with hotel details only. The request includes payment information and specific hotel booking details such as hotel ID, room type, check-in/out dates, and number of rooms. Upon successful creation (201 Created), the test stores the booking ID for later reference."
+					},
+					"response": []
+				},
+				{
+					"name": "3) Create Booking - Flight & Hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Booking - Flight & Hotel | Expect 201\", () => {",
+									"  pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"const createData = pm.response.json();",
+									"pm.environment.set(\"bookingId\", createData.id);",
+									"pm.test(\"Booking Contains Both Flight and Hotel Bookings\", () => {",
+									"  pm.expect(createData.flightBookings).to.be.an(\"array\");",
+									"  pm.expect(createData.hotelBookings).to.be.an(\"array\");",
+									"});",
+									"  pm.environment.set(\"bookingId\", createData.id);",
+									"",
+									"// If we don't already have a flight booking ID, store one from this booking",
+									"if (!pm.environment.get(\"flightBookingId\") && createData.flightBookings && createData.flightBookings.length > 0) {",
+									"  pm.environment.set(\"flightBookingId\", createData.flightBookings[0].id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for booking creation"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentDetails\": {\n    \"cardNumber\": \"5555 5555 5555 4444\",\n    \"cardExpiry\": \"01/27\",\n    \"cardCvc\": \"321\"\n  },\n  \"flightBookings\": [\n    {\n      \"afsFlightId\": \"74dd6e92-b9d2-4701-9e2c-fe4fa20f962f\",\n      \"departureAirportCode\": \"DEF\",\n      \"arrivalAirportCode\": \"UVW\",\n      \"departureTime\": \"2025-12-01T08:00:00.000Z\",\n      \"arrivalTime\": \"2025-12-01T12:00:00.000Z\",\n      \"passengers\": 2,\n      \"price\": 300\n    }\n  ],\n  \"hotelBookings\": [\n    {\n      \"hotelId\": \"{{HOTEL_ID}}\",\n      \"roomTypeId\": \"{{ROOM_TYPE_ID}}\",\n      \"checkInDate\": \"2025-12-02T00:00:00.000Z\",\n      \"checkOutDate\": \"2025-12-05T00:00:00.000Z\",\n      \"numberOfRooms\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/bookings",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Creates a comprehensive booking that includes both flight and hotel accommodations. The request contains payment information, flight details (departure/arrival airports and times), and hotel booking information (check-in/out dates and room details). Tests verify that the response contains both flight and hotel booking arrays, and stores the booking ID for later reference."
+					},
+					"response": []
+				},
+				{
+					"name": "4) Create Booking - Invalid Data (Expect 400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Booking - Invalid Data | Expect 400\", () => {",
+									"  pm.expect(pm.response.code).to.eql(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for booking creation"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentDetails\": {\n    \"cardNumber\": \"1234 5678\",\n    \"cardExpiry\": \"11/10\",\n    \"cardCvc\": \"xxx\"\n  },\n  \"flightBookings\": [{\"departureAirportCode\":\"ABC\"}],\n  \"hotelBookings\": []\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/bookings",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Tests the API's validation by attempting to create a booking with invalid data. The request includes incomplete payment details (invalid card number, expired date) and insufficient flight booking information. The API should reject this request with a 400 Bad Request response."
+					},
+					"response": []
+				},
+				{
+					"name": "5) Get Single Booking by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get Booking | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const detailData = pm.response.json();",
+									"pm.test(\"Booking ID Matches\", () => {",
+									"  pm.expect(detailData.id).to.equal(pm.environment.get(\"bookingId\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for accessing booking details"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/bookings/{{bookingId}}",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{bookingId}}"
+							]
+						},
+						"description": "Retrieves detailed information for a specific booking using the booking ID stored in the environment variable. This request fetches all information related to a single booking including its flight and hotel reservations. The test verifies that the returned booking ID matches the requested ID."
+					},
+					"response": []
+				},
+				{
+					"name": "6) Get Single Booking - Nonexistent (Expect 404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get Nonexistent Booking | Expect 404\", () => {",
+									"  pm.expect(pm.response.code).to.eql(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for accessing booking details"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/bookings/{{nonExistentBookingId}}",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{nonExistentBookingId}}"
+							]
+						},
+						"description": "Tests the API's error handling by attempting to retrieve a booking with a non-existent ID. The API should respond with a 404 Not Found status, indicating that the requested booking does not exist in the system."
+					},
+					"response": []
+				},
+				{
+					"name": "7) Retrieve Invoice for Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Retrieve Invoice | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const invoiceData = pm.response.json();",
+									"pm.test(\"Invoice URL Present\", () => {",
+									"  pm.expect(invoiceData).to.have.property(\"invoiceUrl\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for accessing invoice information"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/bookings/{{bookingId}}/invoice",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{bookingId}}",
+								"invoice"
+							]
+						},
+						"description": "Retrieves the invoice information for a specific booking. This endpoint returns the invoice details including a URL to access or download the full invoice document. The test verifies that the response contains an invoice URL property."
+					},
+					"response": []
+				},
+				{
+					"name": "8) Verify Flight Booking with AFS",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Flight | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const verifyData = pm.response.json();",
+									"",
+									"pm.test(\"Verification Response Contains Required Fields\", () => {",
+									"  pm.expect(verifyData).to.have.property(\"flightId\");",
+									"  pm.expect(verifyData).to.have.property(\"bookingReference\");",
+									"  pm.expect(verifyData).to.have.property(\"status\");",
+									"  pm.expect(verifyData).to.have.property(\"verified\");",
+									"});",
+									"",
+									"pm.test(\"Flight ID Matches the Request\", () => {",
+									"  pm.expect(verifyData.flightId).to.equal(pm.environment.get(\"flightBookingId\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for verification"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/flights/{{flightBookingId}}/verify",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"{{flightBookingId}}",
+								"verify"
+							]
+						},
+						"description": "Verifies a flight booking with the Airline Flight System (AFS) using the flight booking ID. This endpoint checks if the booking exists in the external flight system and confirms its status. The test validates that the response contains all required verification fields and that the flight ID matches the requested ID."
+					},
+					"response": []
+				},
+				{
+					"name": "9) Verify Invalid Flight Booking ID (Expect 404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Invalid Flight | Expect 404\", () => {",
+									"  pm.expect(pm.response.code).to.eql(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for verification"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/flights/{{nonExistentBookingId}}/verify",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"{{nonExistentBookingId}}",
+								"verify"
+							]
+						},
+						"description": "Tests the API's error handling by attempting to verify a flight booking with a non-existent ID. The API should respond with a 404 Not Found status, indicating that the requested flight booking does not exist in the system."
+					},
+					"response": []
+				},
+				{
+					"name": "10) Cancel Booking via PATCH",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Cancel Booking | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const updatedData = pm.response.json();",
+									"pm.test(\"Booking Status is Cancelled\", () => {",
+									"  pm.expect(updatedData).to.have.property(\"status\").eql(\"cancelled\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for modifying booking status"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"cancelled\"\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/bookings/{{bookingId}}",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"{{bookingId}}"
+							]
+						},
+						"description": "Updates the status of a booking to 'cancelled' using the PATCH method. This endpoint allows users to cancel their existing bookings. The test verifies that the response indicates the booking status has been successfully updated to 'cancelled'."
+					},
+					"response": []
+				},
+				{
+					"name": "11) List My Bookings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"List My Bookings | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const listData = pm.response.json();",
+									"pm.test(\"Bookings are Returned as an Array\", () => {",
+									"  pm.expect(listData).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for accessing user's bookings"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/bookings",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						},
+						"description": "Retrieves a list of all bookings associated with the authenticated user. This endpoint returns an array of booking information, including both active and cancelled bookings. The test verifies that the response is a valid array of bookings."
+					},
+					"response": []
+				},
+				{
+					"name": "12) Verify Flight After Cancellation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Flight After Cancellation | Expect 200\", () => {",
+									"  pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"const verifyData = pm.response.json();",
+									"",
+									"// After cancellation, verification should still work but status may be different",
+									"pm.test(\"Verification Response Still Contains Required Fields\", () => {",
+									"  pm.expect(verifyData).to.have.property(\"flightId\");",
+									"  pm.expect(verifyData).to.have.property(\"bookingReference\");",
+									"  pm.expect(verifyData).to.have.property(\"status\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "User authentication token required for verification"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/flights/{{flightBookingId}}/verify",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"{{flightBookingId}}",
+								"verify"
+							]
+						},
+						"description": "Verifies the status of a flight booking after it has been cancelled. This test ensures that cancelled bookings can still be verified with the external flight system, though their status should reflect the cancellation. The test checks that all required verification fields are still present in the response."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight auto complete tests",
+			"item": [
+				{
+					"name": "Search by City - Toronto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has results array\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('results');",
+									"    pm.expect(jsonData.results).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Results contain Toronto\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const found = jsonData.results.some(item => ",
+									"        item.name.toLowerCase() === 'toronto' || ",
+									"        (item.city && item.city.toLowerCase() === 'toronto')",
+									"    );",
+									"    pm.expect(found).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=toronto",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "toronto",
+									"description": "Search term for location matching"
+								}
+							]
+						},
+						"description": "Searches for flight locations by city name. Tests that the API correctly returns location results that match the provided city name in either the name or city fields. The test verifies that the response has a 200 status code, contains a results array, and includes at least one entry for the queried city."
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Airport Code - LAX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results contain LAX airport\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const found = jsonData.results.some(item => ",
+									"        item.code === 'LAX' && item.type === 'airport'",
+									"    );",
+									"    pm.expect(found).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=lax",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "lax",
+									"description": "Airport code search term"
+								}
+							]
+						},
+						"description": "Tests searching for locations by airport code. This request checks if the API can correctly identify and return airports when queried by their IATA code. The test verifies that the response has a 200 status code and contains a result with the matching airport code and type 'airport'."
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Search - New",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results contain locations starting with 'New'\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const startsWithNew = jsonData.results.some(item => ",
+									"        item.name.toLowerCase().startsWith('new')",
+									"    );",
+									"    pm.expect(startsWithNew).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Results are sorted correctly\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.results.length >= 2) {",
+									"        // Check if items starting with 'new' come first",
+									"        const firstStartsWithNew = jsonData.results[0].name.toLowerCase().startsWith('new');",
+									"        pm.expect(firstStartsWithNew).to.be.true;",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "new",
+									"description": "Partial search term"
+								}
+							]
+						},
+						"description": "Tests partial text search functionality with a short term prefix. This verifies that the API supports autocomplete by returning locations that start with the provided prefix. The test verifies that the response has a 200 status code, includes locations starting with the query term, and checks that results are correctly sorted with exact matches first."
+					},
+					"response": []
+				},
+				{
+					"name": "Country Search - China",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results contain locations in China\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const containsChina = jsonData.results.some(item => ",
+									"        item.country === 'China' || item.name.includes('China')",
+									"    );",
+									"    pm.expect(containsChina).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=china",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "china",
+									"description": "Country name search term"
+								}
+							]
+						},
+						"description": "Tests country-based location search functionality. This verifies that the API can search for locations by country name, returning places within that country or with the country in their name. The test verifies that the response has a 200 status code and contains at least one location with the queried country in either the country field or name."
+					},
+					"response": []
+				},
+				{
+					"name": "Empty Query Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response has correct format\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('required');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "",
+									"description": "Empty search term to test input validation"
+								}
+							]
+						},
+						"description": "Tests the API's error handling when an empty query parameter is provided. This verifies that the API properly validates input and rejects empty search terms. The test verifies that the response has a 400 status code and includes an error message indicating that a query is required."
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Query Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error response has correct format\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							]
+						},
+						"description": "Tests the API's error handling when the query parameter is completely omitted. This verifies that the API properly validates the presence of required parameters. The test verifies that the response has a 400 status code and includes an error property in the response body."
+					},
+					"response": []
+				},
+				{
+					"name": "Case Insensitive Search - DUBAI",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results contain Dubai despite uppercase query\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const containsDubai = jsonData.results.some(item => ",
+									"        item.name.toLowerCase().includes('dubai') || ",
+									"        (item.city && item.city.toLowerCase().includes('dubai'))",
+									"    );",
+									"    pm.expect(containsDubai).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=DUBAI",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "DUBAI",
+									"description": "Uppercase search term to test case insensitivity"
+								}
+							]
+						},
+						"description": "Tests case insensitivity in the search functionality by using all uppercase characters in the query. This verifies that the API performs case-insensitive matching regardless of the case used in the search term. The test confirms that the response has a 200 status code and includes matching results regardless of case differences."
+					},
+					"response": []
+				},
+				{
+					"name": "Special Character Handling - O'Hare",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response structure is correct\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('results');",
+									"    pm.expect(jsonData.results).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=o'hare",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "o'hare",
+									"description": "Search term with special character"
+								}
+							]
+						},
+						"description": "Tests the API's ability to handle search terms containing special characters like apostrophes. This verifies that the API properly processes queries with non-alphanumeric characters. The test checks that the response has a 200 status code and returns the correct response structure with a results array."
+					},
+					"response": []
+				},
+				{
+					"name": "Result Limit Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Results are limited to 10 items\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.results.length).to.be.at.most(10);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/locations?query=a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "a",
+									"description": "Short, common search term to test result limits"
+								}
+							]
+						},
+						"description": "Tests the API's pagination/limiting functionality by using a very short and common search term. This verifies that the API properly limits the number of results returned, preventing performance issues when many locations would match. The test confirms that the response has a 200 status code and that the results array contains at most 10 items."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight search",
+			"item": [
+				{
+					"name": "One-way Flight Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains trip type one-way\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.tripType).to.equal('one-way');",
+									"});",
+									"",
+									"pm.test(\"Response contains outbound flights\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('outbound');",
+									"    pm.expect(jsonData.outbound).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each flight has required fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.outbound.length > 0) {",
+									"        const flight = jsonData.outbound[0];",
+									"        pm.expect(flight).to.have.property('itineraryId');",
+									"        pm.expect(flight).to.have.property('flights');",
+									"        pm.expect(flight).to.have.property('totalPrice');",
+									"        pm.expect(flight).to.have.property('totalDuration');",
+									"        pm.expect(flight).to.have.property('departureTime');",
+									"        pm.expect(flight).to.have.property('arrivalTime');",
+									"        pm.expect(flight).to.have.property('origin');",
+									"        pm.expect(flight).to.have.property('destination');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Zurich&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city or airport"
+								},
+								{
+									"key": "destination",
+									"value": "Zurich",
+									"description": "Arrival city or airport"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the API's ability to search for one-way flights between Toronto and Zurich. The request specifies origin, destination, and a departure date but no return date. Tests verify that the response correctly identifies the trip type as 'one-way', contains an outbound flights array, and that each flight has all the required data fields including itinerary ID, price, duration, and times."
+					},
+					"response": []
+				},
+				{
+					"name": "Round-trip Flight Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains trip type round-trip\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.tripType).to.equal('round-trip');",
+									"});",
+									"",
+									"pm.test(\"Response contains outbound and return flights\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('outbound');",
+									"    pm.expect(jsonData).to.have.property('return');",
+									"    pm.expect(jsonData.outbound).to.be.an('array');",
+									"    pm.expect(jsonData.return).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Zurich&departureDate=2024-11-17&returnDate=2024-11-24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city or airport"
+								},
+								{
+									"key": "destination",
+									"value": "Zurich",
+									"description": "Arrival city or airport"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of outbound flight in YYYY-MM-DD format"
+								},
+								{
+									"key": "returnDate",
+									"value": "2024-11-24",
+									"description": "Date of return flight in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests searching for round-trip flights between Toronto and Zurich. The request includes both departure and return dates. Tests verify that the response correctly identifies the trip type as 'round-trip' and contains both outbound and return flight arrays with available options for each direction."
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Airport Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has outbound flights\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('outbound');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=YYZ&destination=ZRH&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "YYZ",
+									"description": "Origin airport IATA code for Toronto Pearson Airport"
+								},
+								{
+									"key": "destination",
+									"value": "ZRH",
+									"description": "Destination airport IATA code for Zurich Airport"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the API's ability to search for flights using airport IATA codes (YYZ for Toronto Pearson, ZRH for Zurich) instead of city names. This ensures the API can handle both city names and airport codes as search parameters. The test verifies a successful 200 response and checks that outbound flight results are returned."
+					},
+					"response": []
+				},
+				{
+					"name": "Search with Layovers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains flights with layovers\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    // Check if any flight has more than one leg (has layovers)",
+									"    const hasLayovers = jsonData.outbound.some(flight => flight.legs > 1);",
+									"    pm.expect(hasLayovers).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Flights with layovers have layover information\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const flightsWithLayovers = jsonData.outbound.filter(flight => flight.legs > 1);",
+									"    ",
+									"    if (flightsWithLayovers.length > 0) {",
+									"        const flight = flightsWithLayovers[0];",
+									"        pm.expect(flight).to.have.property('layovers');",
+									"        pm.expect(flight.layovers).to.be.an('array');",
+									"        pm.expect(flight.layovers.length).to.be.greaterThan(0);",
+									"        ",
+									"        if (flight.layovers.length > 0) {",
+									"            pm.expect(flight.layovers[0]).to.have.property('airport');",
+									"            pm.expect(flight.layovers[0]).to.have.property('duration');",
+									"            pm.expect(flight.layovers[0]).to.have.property('arrivalTime');",
+									"            pm.expect(flight.layovers[0]).to.have.property('departureTime');",
+									"        }",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Dubai&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city"
+								},
+								{
+									"key": "destination",
+									"value": "Dubai",
+									"description": "Arrival city - long-haul route likely to have connections"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the API's handling of multi-leg flights with layovers. Searches for flights from Toronto to Dubai, which typically require connections. Tests verify that the response includes flights with multiple legs and that these flights contain detailed layover information including the connecting airport, layover duration, and arrival/departure times at each connection."
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Origin Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response contains error message\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('required');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?destination=Zurich&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "destination",
+									"value": "Zurich",
+									"description": "Arrival city"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests error handling when a required parameter (origin) is missing from the request. The API should return a 400 Bad Request error with a descriptive message indicating that the origin parameter is required. This test ensures proper validation of required input parameters."
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Date Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Response explains date format error\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.include('date format');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Zurich&departureDate=11/17/2024",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city"
+								},
+								{
+									"key": "destination",
+									"value": "Zurich",
+									"description": "Arrival city"
+								},
+								{
+									"key": "departureDate",
+									"value": "11/17/2024",
+									"description": "Date in MM/DD/YYYY format instead of required YYYY-MM-DD"
+								}
+							]
+						},
+						"description": "Tests the API's validation of date formats by providing a date in MM/DD/YYYY format instead of the required YYYY-MM-DD format. The API should return a 400 Bad Request error with a message explaining that the date format is invalid. This ensures proper validation of date inputs."
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent Route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains empty outbound flights array\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('outbound');",
+									"    pm.expect(jsonData.outbound).to.be.an('array').that.is.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=FakeCity&destination=NonExistentPlace&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "FakeCity",
+									"description": "Non-existent origin location"
+								},
+								{
+									"key": "destination",
+									"value": "NonExistentPlace",
+									"description": "Non-existent destination location"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the API's behavior when searching for flights between locations that don't exist or don't have air service. Rather than returning an error, the API should return a successful 200 response with an empty array of flights, indicating no routes were found between the specified locations. This test ensures graceful handling of valid but unsuccessful searches."
+					},
+					"response": []
+				},
+				{
+					"name": "Total Price Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Multi-leg flights have correctly calculated total price\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const multiLegFlights = jsonData.outbound.filter(flight => flight.legs > 1);",
+									"    ",
+									"    if (multiLegFlights.length > 0) {",
+									"        const flight = multiLegFlights[0];",
+									"        const calculatedTotal = flight.flights.reduce((sum, segment) => sum + segment.price, 0);",
+									"        pm.expect(flight.totalPrice).to.equal(calculatedTotal);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Dubai&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city"
+								},
+								{
+									"key": "destination",
+									"value": "Dubai",
+									"description": "Arrival city - typically requires connections"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the accuracy of price calculations for multi-leg flights. For flights with connections, the API should correctly sum the prices of individual flight segments to calculate the total price. This test verifies that the totalPrice field equals the sum of all individual segment prices, ensuring pricing accuracy for complex itineraries."
+					},
+					"response": []
+				},
+				{
+					"name": "Same Origin and Destination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// The API should still work but likely return no results",
+									"pm.test(\"Response contains outbound flights array\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('outbound');",
+									"    pm.expect(jsonData.outbound).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/flights/search?origin=Toronto&destination=Toronto&departureDate=2024-11-17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "origin",
+									"value": "Toronto",
+									"description": "Departure city"
+								},
+								{
+									"key": "destination",
+									"value": "Toronto",
+									"description": "Same city as origin to test edge case"
+								},
+								{
+									"key": "departureDate",
+									"value": "2024-11-17",
+									"description": "Date of departure in YYYY-MM-DD format"
+								}
+							]
+						},
+						"description": "Tests the API's behavior when the origin and destination are the same location. While this is an unusual search scenario, the API should handle it gracefully rather than throwing an error. The test expects a 200 status code and an outbound flights array (likely empty, as flights from a location to itself are not typically available)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile Tests",
+			"item": [
+				{
+					"name": "Owner",
+					"item": [
+						{
+							"name": "Get Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Profile contains expected fields\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('email');",
+											"    pm.expect(jsonData).to.have.property('firstName');",
+											"    pm.expect(jsonData).to.have.property('lastName');",
+											"    pm.expect(jsonData).to.have.property('role');",
+											"});",
+											"",
+											"pm.test(\"No password included in response\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.not.have.property('passwordHash');",
+											"    pm.expect(jsonData).to.not.have.property('password');",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{owner_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "auth_token={{owner_token}}",
+										"description": "Authentication token for property owner access",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/user/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"user",
+										""
+									]
+								},
+								"description": "Retrieves the complete profile information for the currently authenticated property owner. This endpoint returns personal information such as ID, email, name, and role. The test verifies that the response has a 200 status code, contains all expected profile fields, and importantly, confirms that no password information is included in the response for security purposes."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Profile updated successfully\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('message').that.includes('updated');",
+											"    pm.expect(jsonData).to.have.property('user');",
+											"});",
+											"",
+											"pm.test(\"Profile contains updated values\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const requestData = JSON.parse(pm.request.body.raw);",
+											"    ",
+											"    pm.expect(jsonData.user.firstName).to.equal(requestData.firstName);",
+											"    pm.expect(jsonData.user.lastName).to.equal(requestData.lastName);",
+											"    pm.expect(jsonData.user.phoneNumber).to.equal(requestData.phoneNumber);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{owner_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									},
+									{
+										"key": "Cookie",
+										"value": "auth_token={{owner_token}}",
+										"description": "Authentication token for property owner access",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"Updated{{$timestamp}}\",\n    \"lastName\": \"User\",\n    \"phoneNumber\": \"+1987654321\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/user/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"user",
+										""
+									]
+								},
+								"description": "Updates the profile information for the currently authenticated property owner. This endpoint accepts firstName, lastName, and phoneNumber in the request body and returns the updated user object. The test includes dynamic content with a timestamp to ensure the change is unique across test runs. The test verifies that the response indicates a successful update (with a confirmation message) and that the returned user object contains the values that were submitted in the request."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for profile management endpoints when accessed with property owner credentials. These tests verify that property owners can successfully retrieve and update their profile information."
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Get Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Get Profile - Expect 200\", function () {",
+											"    pm.expect(pm.response.code).to.equal(200);",
+											"});",
+											"",
+											"pm.test(\"Profile contains expected fields\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('email');",
+											"    pm.expect(jsonData).to.have.property('firstName');",
+											"    pm.expect(jsonData).to.have.property('lastName');",
+											"    pm.expect(jsonData).to.have.property('role');",
+											"    pm.expect(jsonData.role).to.equal('user');",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Authentication token for regular user access"
+									}
+								],
+								"url": {
+									"raw": "{{server_url}}/api/user",
+									"host": [
+										"{{server_url}}"
+									],
+									"path": [
+										"api",
+										"user"
+									]
+								},
+								"description": "Retrieves the complete profile information for the currently authenticated regular user. This endpoint returns personal information such as ID, email, name, and role. The test verifies that the response has a 200 status code and checks that the returned user has the 'user' role, distinguishing them from property owners."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Update Profile - Expect 200\", function () {",
+											"    pm.expect(pm.response.code).to.equal(200);",
+											"});",
+											"",
+											"pm.test(\"Profile updated successfully\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('message').that.includes('updated');",
+											"    pm.expect(jsonData).to.have.property('user');",
+											"});",
+											"",
+											"pm.test(\"Profile contains updated values\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData.user.firstName).to.equal(\"AliceUpdated\");",
+											"    pm.expect(jsonData.user.lastName).to.equal(\"DoeUpdated\");",
+											"    pm.expect(jsonData.user.phoneNumber).to.equal(\"123-456-7890\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Authentication token for regular user access"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"firstName\": \"AliceUpdated\",\n  \"lastName\": \"DoeUpdated\",\n  \"profilePictureUrl\": \"https://example.com/profile.jpg\",\n  \"phoneNumber\": \"123-456-7890\"\n}"
+								},
+								"url": {
+									"raw": "{{server_url}}/api/user",
+									"host": [
+										"{{server_url}}"
+									],
+									"path": [
+										"api",
+										"user"
+									]
+								},
+								"description": "Updates the profile information for the currently authenticated regular user. This endpoint accepts firstName, lastName, profilePictureUrl, and phoneNumber in the request body and returns the updated user object. The test verifies that the response has a 200 status code, contains a success message, and that the updated user object reflects the changes submitted in the request."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for profile management endpoints when accessed with regular user credentials. These tests verify that standard users can successfully retrieve and update their profile information."
+				}
+			]
+		},
+		{
+			"name": "Hotel Management",
+			"item": [
+				{
+					"name": "2. Hotel Management",
+					"item": [
+						{
+							"name": "List Hotels",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Authentication token for accessing the API"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									]
+								},
+								"description": "Retrieves a list of all hotels available in the system. This endpoint returns an array of hotel objects, each containing basic information about the hotel. The request requires an authentication token, and the response is expected to be a JSON array."
+							},
+							"response": []
+						},
+						{
+							"name": "Create Hotel",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Response contains hotel ID\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.exist;",
+											"    pm.environment.set(\"HOTEL_ID\", jsonData.id);",
+											"});",
+											"",
+											"pm.test(\"Hotel name matches request\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Test Hotel\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test Hotel\",\n    \"address\": \"123 Test Street, Test City\",\n    \"latitude\": 43.6532,\n    \"longitude\": -79.3832,\n    \"starRating\": 4,\n    \"logoUrl\": \"https://example.com/logo.png\",\n    \"images\": [\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									]
+								},
+								"description": "Creates a new hotel in the system. This endpoint requires a property owner's authentication token and a JSON payload containing the hotel details. On success, it returns a 201 Created status with the newly created hotel object, including a unique ID that is stored in the environment variables for later use."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Hotel by ID (user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains correct hotel\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"HOTEL_ID\"));",
+											"    pm.expect(jsonData.name).to.equal(\"Test Hotel\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Regular user's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Retrieves detailed information about a specific hotel using its unique ID. This request is performed with a regular user's authentication token to verify that hotel details are accessible to all authenticated users, not just property owners. The test verifies that the correct hotel information is returned."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Hotel by ID (owner)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains correct hotel\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"HOTEL_ID\"));",
+											"    pm.expect(jsonData.name).to.equal(\"Test Hotel\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Retrieves detailed information about a specific hotel using its unique ID. This request is performed with a property owner's authentication token to verify that hotel details are accessible to the hotel owner. The test verifies that the correct hotel information is returned, matching what was created earlier."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Hotel (user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains updated values\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Updated Test Hotel\");",
+											"    pm.expect(jsonData.starRating).to.equal(5);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Regular user's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Test Hotel\",\n    \"starRating\": 5\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Updates an existing hotel's information using a regular user's authentication token. This tests whether users who are not property owners can update hotel details. The request includes a partial update with new values for the name and star rating. The test verifies that the response contains the updated values."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Hotel (owner)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains updated values\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Updated Test Hotel\");",
+											"    pm.expect(jsonData.starRating).to.equal(5);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Test Hotel\",\n    \"starRating\": 5\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Updates an existing hotel's information using a property owner's authentication token. This tests the primary use case where hotel owners update their property details. The request includes a partial update with new values for the name and star rating. The test verifies that the response contains the updated values."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for the hotel management API endpoints, including listing hotels, creating new hotels, retrieving hotel details, and updating hotel information."
+				},
+				{
+					"name": "3. Room Type Management",
+					"item": [
+						{
+							"name": "Create Room Type (user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Response contains room type ID\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.exist;",
+											"    pm.collectionVariables.set(\"ROOM_TYPE_ID\", jsonData.id);",
+											"});",
+											"",
+											"pm.test(\"Room type properties match request\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Deluxe Room\");",
+											"    pm.expect(jsonData.pricePerNight).to.equal(150);",
+											"    pm.expect(jsonData.baseAvailability).to.equal(10);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Regular user's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Deluxe Room\",\n    \"amenities\": [\"TV\", \"WiFi\", \"Mini Fridge\", \"King Bed\"],\n    \"pricePerNight\": 150,\n    \"images\": [\"https://example.com/room1.jpg\", \"https://example.com/room2.jpg\"],\n    \"baseAvailability\": 10\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types"
+									]
+								},
+								"description": "Creates a new room type for a specific hotel using a regular user's authentication token. This tests whether users who are not property owners can create room types. The request includes complete room type details including name, amenities, price per night, images, and base availability. The test verifies that the response contains the expected data and stores the room type ID for later use."
+							},
+							"response": []
+						},
+						{
+							"name": "Create Room Type (owner)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Response contains room type ID\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.exist;",
+											"    pm.environment.set(\"ROOM_TYPE_ID\", jsonData.id);",
+											"});",
+											"",
+											"pm.test(\"Room type properties match request\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Deluxe Room\");",
+											"    pm.expect(jsonData.pricePerNight).to.equal(150);",
+											"    pm.expect(jsonData.baseAvailability).to.equal(10);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Deluxe Room\",\n    \"amenities\": [\"TV\", \"WiFi\", \"Mini Fridge\", \"King Bed\"],\n    \"pricePerNight\": 150,\n    \"images\": [\"https://example.com/room1.jpg\", \"https://example.com/room2.jpg\"],\n    \"baseAvailability\": 10\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types"
+									]
+								},
+								"description": "Creates a new room type for a specific hotel using a property owner's authentication token. This tests the primary use case where hotel owners add room types to their property. The request includes complete room type details including name, amenities, price per night, images, and base availability. The test verifies that the response contains the expected data and stores the room type ID for later use."
+							},
+							"response": []
+						},
+						{
+							"name": "List Room Types",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"Created room type exists in list\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var roomType = jsonData.find(rt => rt.id === pm.collectionVariables.get(\"ROOM_TYPE_ID\"));",
+											"    pm.expect(roomType).to.exist;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types"
+									]
+								},
+								"description": "Retrieves a list of all room types available for a specific hotel. This request is made with a property owner's authentication token. The response should be an array of room type objects. The test verifies that the previously created room type exists in the returned list by checking for its ID."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Room Type by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains correct room type\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"ROOM_TYPE_ID\"));",
+											"    pm.expect(jsonData.name).to.equal(\"Deluxe Room\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}"
+									]
+								},
+								"description": "Retrieves detailed information about a specific room type using its unique ID. This request is made with a property owner's authentication token. The test verifies that the response contains the correct room type by matching the ID and name from the previously created room type."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Room Type (user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains updated values\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Premium Deluxe Room\");",
+											"    pm.expect(jsonData.pricePerNight).to.equal(175);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Regular user's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Premium Deluxe Room\",\n    \"pricePerNight\": 175\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}"
+									]
+								},
+								"description": "Updates an existing room type's information using a regular user's authentication token. This tests whether users who are not property owners can update room type details. The request includes a partial update with new values for the name and price per night. The test verifies that the response contains the updated values."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Room Type (owner)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains updated values\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.name).to.equal(\"Premium Deluxe Room\");",
+											"    pm.expect(jsonData.pricePerNight).to.equal(175);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Premium Deluxe Room\",\n    \"pricePerNight\": 175\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}"
+									]
+								},
+								"description": "Updates an existing room type's information using a property owner's authentication token. This tests the primary use case where hotel owners update room type details. The request includes a partial update with new values for the name and price per night. The test verifies that the response contains the updated values."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for room type management API endpoints, including creating, listing, retrieving, and updating room types within hotels."
+				},
+				{
+					"name": "4. Room Availability Management",
+					"item": [
+						{
+							"name": "Set Room Availability (user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Response is an array with 2 items\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.be.an('array');",
+											"    pm.expect(jsonData.length).to.equal(2);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "Regular user's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"date\": \"2025-04-01\",\n        \"availableRooms\": 8\n    },\n    {\n        \"date\": \"2025-04-02\",\n        \"availableRooms\": 5\n    }\n]"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}/availability",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}",
+										"availability"
+									]
+								},
+								"description": "Sets room availability for specific dates using a regular user's authentication token. This tests whether users who are not property owners can modify room availability. The request includes an array of date objects, each specifying a date and the number of available rooms for that date. The test verifies that the response is an array containing the created availability records."
+							},
+							"response": []
+						},
+						{
+							"name": "Set Room Availability (owner)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Response is an array with 2 items\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.be.an('array');",
+											"    pm.expect(jsonData.length).to.equal(2);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n    {\n        \"date\": \"2025-04-01\",\n        \"availableRooms\": 6\n    },\n    {\n        \"date\": \"2025-04-02\",\n        \"availableRooms\": 5\n    }\n]"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}/availability",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}",
+										"availability"
+									]
+								},
+								"description": "Sets room availability for specific dates using a property owner's authentication token. This tests the primary use case where hotel owners manage the availability of their room types. The request includes an array of date objects, each specifying a date and the number of available rooms for that date. The test verifies that the response is an array containing the created availability records."
+							},
+							"response": []
+						},
+						{
+							"name": "Check Room Availability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains room type info\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.roomTypeId).to.equal(pm.collectionVariables.get(\"ROOM_TYPE_ID\"));",
+											"    pm.expect(jsonData.availability).to.be.an('array');",
+											"});",
+											"",
+											"pm.test(\"First day availability is 8\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var firstDay = jsonData.availability.find(a => a.date === \"2025-04-01\");",
+											"    pm.expect(firstDay).to.exist;",
+											"    pm.expect(firstDay.availableRooms).to.equal(8);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{user_token}}",
+										"description": "User's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}/availability/check?startDate=2025-04-01&endDate=2025-04-05",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}",
+										"availability",
+										"check"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "2025-04-01",
+											"description": "Beginning date for availability check (YYYY-MM-DD)"
+										},
+										{
+											"key": "endDate",
+											"value": "2025-04-05",
+											"description": "End date for availability check (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Checks room availability for a specific room type over a date range. This request returns the availability status for each day between the specified start and end dates. The test verifies that the response contains the room type ID and an availability array, and checks that the first day's availability matches what was set in previous requests."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for room availability management API endpoints, including setting and checking room availability for specific dates."
+				},
+				{
+					"name": "5. Hotel Booking Management",
+					"item": [
+						{
+							"name": "Setup Booking ID (Skip this in real testing)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// This is just a test setup step - you would have a real booking flow",
+											"// For now, let's assume we have a booking ID from a customer booking",
+											"pm.collectionVariables.set(\"BOOKING_ID\", \"test-booking-id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/dummy",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"dummy"
+									]
+								},
+								"description": "This is a dummy request that simulates setting up a booking ID for testing purposes. In a real-world scenario, this would be replaced by an actual booking creation flow. The test script sets a collection variable with a test booking ID for use in subsequent requests."
+							},
+							"response": []
+						},
+						{
+							"name": "List Hotel Bookings",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/bookings",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"bookings"
+									]
+								},
+								"description": "Retrieves a list of all bookings for a specific hotel. This endpoint requires a property owner's authentication token to ensure only authorized users can access booking data. The response should be an array of booking objects. The test verifies that the response is a successful 200 status code and that the response body is an array."
+							},
+							"response": []
+						},
+						{
+							"name": "Filter Hotel Bookings by Date Range",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/bookings?startDate=2025-04-01&endDate=2025-04-30",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "2025-04-01",
+											"description": "Beginning date for filtering bookings (YYYY-MM-DD)"
+										},
+										{
+											"key": "endDate",
+											"value": "2025-04-30",
+											"description": "End date for filtering bookings (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Retrieves hotel bookings filtered by a specific date range. This endpoint returns only bookings that fall within or overlap with the specified start and end dates. The test verifies that the response is successful with a 200 status code and that the returned data is an array of bookings."
+							},
+							"response": []
+						},
+						{
+							"name": "Filter Hotel Bookings by Room Type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"All bookings are for requested room type\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    if (jsonData.length > 0) {",
+											"        jsonData.forEach(function(booking) {",
+											"            pm.expect(booking.roomTypeId).to.equal(pm.collectionVariables.get(\"ROOM_TYPE_ID\"));",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Property owner's authentication token"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/bookings?roomTypeId={{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "roomTypeId",
+											"value": "{{ROOM_TYPE_ID}}",
+											"description": "Room type ID to filter bookings"
+										}
+									]
+								},
+								"description": "Retrieves hotel bookings filtered by a specific room type. This endpoint returns only bookings associated with the specified room type ID. The test verifies that the response status is 200 and, if any bookings are returned, checks that all bookings in the response have the requested room type ID."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Single Booking Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 404\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+											"});",
+											"",
+											"if (pm.response.code === 200) {",
+											"    pm.test(\"Response contains booking details\", function () {",
+											"        var jsonData = pm.response.json();",
+											"        pm.expect(jsonData.id).to.exist;",
+											"        pm.expect(jsonData.hotelId).to.equal(pm.collectionVariables.get(\"HOTEL_ID\"));",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Authentication token for accessing the API"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/bookings/{{bookingId}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"bookings",
+										"{{bookingId}}"
+									]
+								},
+								"description": "Retrieves detailed information about a specific hotel booking. Since we're using a test booking ID, the endpoint might return either a successful response with booking details or a 404 Not Found error. The test validates that the response is either a 200 OK with the correct hotel ID, or a 404 Not Found status code."
+							},
+							"response": []
+						},
+						{
+							"name": "Cancel Hotel Booking",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 404\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+											"});",
+											"",
+											"if (pm.response.code === 200) {",
+											"    pm.test(\"Booking status is cancelled\", function () {",
+											"        var jsonData = pm.response.json();",
+											"        pm.expect(jsonData.status).to.equal(\"cancelled\");",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Authentication token for accessing the API"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "Specifies that the request body format is JSON"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"cancelled\"\n}"
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/bookings/{{bookingId}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"bookings",
+										"{{bookingId}}"
+									]
+								},
+								"description": "Updates the status of a hotel booking to 'cancelled'. Since we're using a test booking ID, the endpoint might return either a successful response or a 404 Not Found error. The test validates that the response is either a 200 OK with the status set to 'cancelled', or a 404 Not Found if the booking doesn't exist."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for hotel booking management API endpoints, including listing, filtering, viewing and cancelling bookings."
+				},
+				{
+					"name": "6. Cleanup",
+					"item": [
+						{
+							"name": "Delete Room Type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains success message\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.exist;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Authentication token for accessing the API"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}"
+									]
+								},
+								"description": "Deletes a room type from a hotel. This is a cleanup operation to remove the test room type created earlier. The test verifies that the response has a 200 OK status code and contains a success message, confirming that the room type was successfully deleted from the system."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Hotel",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains success message\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.exist;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{owner_token}}",
+										"description": "Authentication token for accessing the API"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Deletes a hotel from the system. This is the final cleanup operation to remove the test hotel created earlier. The test verifies that the response has a 200 OK status code and contains a success message, confirming that the hotel was successfully deleted from the system."
+							},
+							"response": []
+						}
+					],
+					"description": "Tests for cleanup operations including deleting room types and hotels to ensure proper resource management."
+				}
+			]
+		},
+		{
+			"name": "Hotel Search and Booking - Visitor",
+			"item": [
+				{
+					"name": "1. Hotel Search",
+					"item": [
+						{
+							"name": "Search Hotels - Basic",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									]
+								},
+								"description": "Retrieves a list of all available hotels without any filters applied. This endpoint returns basic information about all hotels in the system, including their names, locations, and star ratings. The test verifies that the response has a 200 status code and contains an array of hotel objects."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels by City",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Hotels are in Toronto\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"    ",
+											"    if (jsonData.length > 0) {",
+											"        jsonData.forEach(function(hotel) {",
+											"            pm.expect(hotel.city).to.equal(\"Toronto\");",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?city=Toronto",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "city",
+											"value": "Toronto",
+											"description": "City name to filter hotels by location"
+										}
+									]
+								},
+								"description": "Filters hotels by city name, returning only hotels located in the specified city (Toronto in this case). This endpoint demonstrates location-based filtering of hotel results. The test verifies that all hotels in the response array have their city field set to 'Toronto'."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels by Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Hotels contain 'Grand' in name\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"    ",
+											"    if (jsonData.length > 0) {",
+											"        jsonData.forEach(function(hotel) {",
+											"            pm.expect(hotel.name.toLowerCase()).to.include(\"grand\");",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?name=Grand",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Grand",
+											"description": "Partial or full hotel name to search for"
+										}
+									]
+								},
+								"description": "Searches for hotels by name, returning hotels that contain the specified term in their name ('Grand' in this case). This endpoint allows users to find hotels by their brand name or partial name matches. The test verifies that all hotels in the response have 'Grand' in their name (case-insensitive)."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels by Star Rating",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Hotels are within rating range\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"    ",
+											"    if (jsonData.length > 0) {",
+											"        jsonData.forEach(function(hotel) {",
+											"            pm.expect(hotel.starRating).to.be.at.least(4);",
+											"            pm.expect(hotel.starRating).to.be.at.most(5);",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?minRating=4&maxRating=5",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "minRating",
+											"value": "4",
+											"description": "Minimum star rating (1-5)"
+										},
+										{
+											"key": "maxRating",
+											"value": "5",
+											"description": "Maximum star rating (1-5)"
+										}
+									]
+								},
+								"description": "Filters hotels by star rating range, returning only hotels with ratings between the specified minimum and maximum values (4-5 stars in this case). This endpoint allows users to find hotels that match their quality expectations. The test verifies that all hotels in the response have star ratings within the specified range."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels by Date Range",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?checkInDate=2025-03-15&checkOutDate=2025-03-20",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "checkInDate",
+											"value": "2025-03-15",
+											"description": "Check-in date in YYYY-MM-DD format"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-20",
+											"description": "Check-out date in YYYY-MM-DD format"
+										}
+									]
+								},
+								"description": "Searches for hotels that have availability during the specified date range. This endpoint returns hotels that have at least one room type available for booking during the entire period from check-in to check-out. The test verifies that the response contains an array of hotels with availability for the requested dates."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels by Price Range",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Hotels are within price range\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"    ",
+											"    if (jsonData.length > 0) {",
+											"        jsonData.forEach(function(hotel) {",
+											"            if (hotel.lowestPrice) {",
+											"                pm.expect(hotel.lowestPrice).to.be.at.least(100);",
+											"                pm.expect(hotel.lowestPrice).to.be.at.most(300);",
+											"            }",
+											"        });",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?minPrice=100&maxPrice=300&checkInDate=2025-03-15&checkOutDate=2025-03-20",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "minPrice",
+											"value": "100",
+											"description": "Minimum price per night in dollars"
+										},
+										{
+											"key": "maxPrice",
+											"value": "300",
+											"description": "Maximum price per night in dollars"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-15",
+											"description": "Check-in date in YYYY-MM-DD format"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-20",
+											"description": "Check-out date in YYYY-MM-DD format"
+										}
+									]
+								},
+								"description": "Filters hotels by price range, returning only hotels with room rates between the specified minimum and maximum prices ($100-$300 in this case). This endpoint requires check-in and check-out dates to calculate the nightly rates for the specified period. The test verifies that all hotels in the response have their lowest price within the specified range."
+							},
+							"response": []
+						},
+						{
+							"name": "Search Hotels - Full Filters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = pm.response.json();",
+											"if (jsonData && jsonData.length > 0) {",
+											"    pm.environment.set('HOTEL_ID', jsonData[0].id);",
+											"    ",
+											"    pm.test(\"Results match all filter criteria\", function() {",
+											"        const hotel = jsonData[0];",
+											"        pm.expect(hotel.city).to.equal(\"Toronto\");",
+											"        pm.expect(hotel.name.toLowerCase()).to.include(\"grand\");",
+											"        pm.expect(hotel.starRating).to.be.at.least(4);",
+											"        pm.expect(hotel.starRating).to.be.at.most(5);",
+											"        if (hotel.lowestPrice) {",
+											"            pm.expect(hotel.lowestPrice).to.be.at.least(100);",
+											"            pm.expect(hotel.lowestPrice).to.be.at.most(300);",
+											"        }",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels?city=Toronto&name=Grand&minRating=4&maxRating=5&minPrice=100&maxPrice=300&checkInDate=2025-03-15&checkOutDate=2025-03-20",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels"
+									],
+									"query": [
+										{
+											"key": "city",
+											"value": "Toronto",
+											"description": "City name to filter hotels by location"
+										},
+										{
+											"key": "name",
+											"value": "Grand",
+											"description": "Partial or full hotel name to search for"
+										},
+										{
+											"key": "minRating",
+											"value": "4",
+											"description": "Minimum star rating (1-5)"
+										},
+										{
+											"key": "maxRating",
+											"value": "5",
+											"description": "Maximum star rating (1-5)"
+										},
+										{
+											"key": "minPrice",
+											"value": "100",
+											"description": "Minimum price per night in dollars"
+										},
+										{
+											"key": "maxPrice",
+											"value": "300",
+											"description": "Maximum price per night in dollars"
+										},
+										{
+											"key": "checkInDate",
+											"value": "2025-03-15",
+											"description": "Check-in date in YYYY-MM-DD format"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-20",
+											"description": "Check-out date in YYYY-MM-DD format"
+										}
+									]
+								},
+								"description": "Demonstrates the use of multiple filter criteria simultaneously to find hotels that meet all specified conditions. This request combines city, name, star rating, price range, and date filters to perform a highly targeted search. The test stores the ID of the first matching hotel for use in subsequent requests and verifies that the hotel matches all filter criteria."
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for searching hotels with various filters including location, name, star rating, price range, and availability dates. These endpoints allow users to find hotels matching their specific requirements."
+				},
+				{
+					"name": "2. Hotel Details",
+					"item": [
+						{
+							"name": "Get Hotel Details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains hotel details\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.environment.get('HOTEL_ID'));",
+											"    pm.expect(jsonData.name).to.exist;",
+											"    pm.expect(jsonData.address).to.exist;",
+											"    pm.expect(jsonData.starRating).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									]
+								},
+								"description": "Retrieves comprehensive information about a specific hotel using its unique ID. This endpoint returns detailed hotel data including name, address, star rating, amenities, images, and other relevant information. The test verifies that the response contains the correct hotel ID and essential hotel details."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Hotel Details with Availability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains hotel details with availability\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.environment.get('HOTEL_ID'));",
+											"    pm.expect(jsonData.roomTypes).to.exist;",
+											"    pm.expect(jsonData.roomTypes).to.be.an('array');",
+											"    ",
+											"    if (jsonData.roomTypes.length > 0) {",
+											"        pm.expect(jsonData.roomTypes[0].availability).to.exist;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}?checkInDate=2025-03-15&checkOutDate=2025-03-20",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}"
+									],
+									"query": [
+										{
+											"key": "checkInDate",
+											"value": "2025-03-15",
+											"description": "Check-in date in YYYY-MM-DD format"
+										},
+										{
+											"key": "checkOutDate",
+											"value": "2025-03-20",
+											"description": "Check-out date in YYYY-MM-DD format"
+										}
+									]
+								},
+								"description": "Retrieves detailed hotel information along with room availability for the specified date range. This endpoint enhances the basic hotel details endpoint by including availability information for all room types during the requested period. The test verifies that the response contains room types with availability data."
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for viewing detailed hotel information, with options to include room availability data for specified date ranges."
+				},
+				{
+					"name": "3. Room Types",
+					"item": [
+						{
+							"name": "Get All Room Types for Hotel",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response is an array of room types\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"});",
+											"",
+											"var jsonData = pm.response.json();",
+											"if (jsonData && jsonData.length > 0) {",
+											"    pm.environment.set('ROOM_TYPE_ID', jsonData[0].id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types"
+									]
+								},
+								"description": "Retrieves a list of all room types available for a specific hotel. This endpoint returns an array of room type objects, each containing details such as name, amenities, price per night, and images. The test stores the ID of the first room type for use in subsequent requests and verifies that the response is a valid array."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Specific Room Type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains room type details\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.id).to.equal(pm.environment.get('ROOM_TYPE_ID'));",
+											"    pm.expect(jsonData.name).to.exist;",
+											"    pm.expect(jsonData.pricePerNight).to.exist;",
+											"    pm.expect(jsonData.amenities).to.exist;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}"
+									]
+								},
+								"description": "Retrieves detailed information about a specific room type using its unique ID. This endpoint returns comprehensive data about the room type, including name, description, price per night, amenities, images, and base availability. The test verifies that the response contains the correct room type ID and essential room details."
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for viewing room types within a hotel, including listing all room types and retrieving detailed information about specific room types."
+				},
+				{
+					"name": "4. Room Availability",
+					"item": [
+						{
+							"name": "Check Room Type Availability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains availability data\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.roomTypeId).to.equal(pm.environment.get('ROOM_TYPE_ID'));",
+											"    pm.expect(jsonData.availability).to.exist;",
+											"    pm.expect(jsonData.availability).to.be.an('array');",
+											"    ",
+											"    if (jsonData.availability.length > 0) {",
+											"        pm.expect(jsonData.availability[0].date).to.exist;",
+											"        pm.expect(jsonData.availability[0].availableRooms).to.exist;",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}/availability/check?startDate=2025-03-15&endDate=2025-03-20",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}",
+										"availability",
+										"check"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "2025-03-15",
+											"description": "First date to check availability (YYYY-MM-DD)"
+										},
+										{
+											"key": "endDate",
+											"value": "2025-03-20",
+											"description": "Last date to check availability (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Checks room availability for a specific room type over a defined date range. This endpoint returns availability data for each day between the specified start and end dates, including the number of available rooms on each day. The test verifies that the response contains the correct room type ID and an availability array with date and room count information."
+							},
+							"response": []
+						},
+						{
+							"name": "Check Room Type Availability (Default 30 Days)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function() {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains availability for 30 days\", function() {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.roomTypeId).to.equal(pm.environment.get('ROOM_TYPE_ID'));",
+											"    pm.expect(jsonData.availability).to.exist;",
+											"    pm.expect(jsonData.availability).to.be.an('array');",
+											"    pm.expect(jsonData.availability.length).to.be.at.most(30);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/hotels/{{HOTEL_ID}}/room-types/{{ROOM_TYPE_ID}}/availability/check?startDate=2025-03-15",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"hotels",
+										"{{HOTEL_ID}}",
+										"room-types",
+										"{{ROOM_TYPE_ID}}",
+										"availability",
+										"check"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "2025-03-15",
+											"description": "First date to check availability (YYYY-MM-DD)"
+										}
+									]
+								},
+								"description": "Tests the API's default behavior when only a start date is provided for availability checking. This endpoint should return availability data for a 30-day period starting from the specified start date. The test verifies that the response contains availability data for at most 30 days when no end date is specified."
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for checking room availability for specific dates, with options to specify custom date ranges or use default periods."
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "List Notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"List Notifications - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains notifications array\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('notifications');",
+									"    pm.expect(jsonData.notifications).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Notifications have required fields\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.notifications.length > 0) {",
+									"        var notification = jsonData.notifications[0];",
+									"        pm.expect(notification).to.have.property('id');",
+									"        pm.expect(notification).to.have.property('message');",
+									"        pm.expect(notification).to.have.property('createdAt');",
+									"        pm.expect(notification).to.have.property('read');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{owner_token}}",
+								"description": "Authentication token for property owner access"
+							}
+						],
+						"url": {
+							"raw": "{{server_url}}/api/notifications",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						},
+						"description": "Retrieves a list of all notifications for the authenticated user. This endpoint returns notifications sorted by date (newest first) and includes information about whether each notification has been read. The response includes a 'notifications' array containing each notification object with id, message, timestamp, and read status. This test verifies that the response has a 200 status code and contains properly structured notification data."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notifications as Read",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Mark Notifications - Expect 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test(\"Response indicates success\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Response includes count of updated notifications\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('updatedCount');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{user_token}}",
+								"description": "Authentication token for regular user access"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "Specifies that the request body format is JSON"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notificationIds\": [\"some-notification-id\"]\n}"
+						},
+						"url": {
+							"raw": "{{server_url}}/api/notifications",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						},
+						"description": "Updates the read status of specified notifications to mark them as read. This endpoint accepts an array of notification IDs in the request body and updates all matching notifications to have read=true status. It returns a success indicator and a count of how many notifications were updated. This test verifies that the response has a 200 status code and contains a success property with value true, confirming that the notifications were successfully marked as read."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
